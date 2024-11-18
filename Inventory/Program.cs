@@ -7,6 +7,7 @@ using System.Security.AccessControl;
 using Inventory;
 using System.IO;
 using System.Net;
+using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.SharePoint.Client;
@@ -44,39 +45,33 @@ public class Program
             return user;
         }
     }
-
-    public static void AssignInventory()
-    {
-        
-    }
     
     public static void Main()
     {
-        Console.CursorVisible = false;
+        /*Console.CursorVisible = false;
         string user = Program.CheckUser();
         Console.Clear();
         Console.WriteLine($"Welcome {user}! Press any key to continue...");
         Console.ReadKey();
         Console.Clear();
-        
 
-        ConsoleKeyInfo notEnter = new ConsoleKeyInfo();
-        ArrayList listOfServiceTags = new ArrayList();
-        string serviceTag = "temp value";
-        Console.WriteLine("Enter service tags:");
-        while (!string.IsNullOrEmpty(serviceTag))
+        bool usingApp = true;
+
+        while (usingApp)
         {
-            serviceTag = Console.ReadLine();
-            serviceTag = serviceTag.ToUpper();
-            if (!string.IsNullOrEmpty(serviceTag) && !listOfServiceTags.Contains(serviceTag))
-            {
-                listOfServiceTags.Add(serviceTag);
-            }
-        }
+            string menuSelection = UserInput.ShowMainMenu();
 
-        UserInput.AskQuestion("Do you want to remove any of these service tags?", listOfServiceTags);
+            if (menuSelection == "Exit")
+            {
+                Console.Clear();
+                
+                Environment.Exit(1);
+            }
+            
+        }*/
+
         
-        
+        Freshservice.AssignDevice("123456789", "test");
         
         Environment.Exit(1);
         

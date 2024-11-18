@@ -8,7 +8,7 @@ public class UserInput
 {
     public static string ShowMainMenu()
     {
-        ArrayList options = ["Add to Inventory", "Assign Inventory", "View Inventory"];
+        ArrayList options = ["Add to Inventory", "Assign Inventory", "View Inventory", "Exit"];
         string answer = AskQuestion("What are you trying to do?", options);
         return answer;
     }
@@ -16,8 +16,9 @@ public class UserInput
     /* 
      * Method that takes in a string question and array of answer choices. Returns a string of the answer
      */
-    public static string AskQuestion(string question, ArrayList answers)
+    public static string AskQuestion(string question, ArrayList answers, int height=0)
     {
+        height++;
         Console.CursorVisible = false;
 
         Console.WriteLine(question);
@@ -26,11 +27,11 @@ public class UserInput
         bool isSelected = false;
         string reverseText = "\x1b[7m";
 
-        (int left, int top) = Console.GetCursorPosition();
+        
 
         while (!isSelected)
         {
-            Console.SetCursorPosition(left, top);
+            Console.SetCursorPosition(0, height);
 
             for (int i = 0; i < answers.Count; i++)
             {
@@ -60,32 +61,66 @@ public class UserInput
     {
         ConsoleKeyInfo notEnter = new ConsoleKeyInfo();
         ArrayList listOfServiceTags = new ArrayList();
-        string serviceTag = "temp value";
-        Console.WriteLine("Enter service tags. Scan them or hit enter after each one (hit enter to exit):");
-        while (!string.IsNullOrEmpty(serviceTag))
+
+        bool needsToAddItems = true;
+
+        while (needsToAddItems)
         {
-            serviceTag = Console.ReadLine();
-            serviceTag = serviceTag.ToUpper();
-            if (!string.IsNullOrEmpty(serviceTag) && !listOfServiceTags.Contains(serviceTag))
+            Console.CursorVisible = true;
+            Console.WriteLine("Enter service tags. Scan them or hit enter after each one (hit enter to exit):");
+
+            foreach (string tag in listOfServiceTags)
             {
-                listOfServiceTags.Add(serviceTag);
+                Console.WriteLine(tag);
             }
-        }
-        Console.Clear();
 
-        Console.WriteLine("These are the service tags:");
-        foreach (string tag in listOfServiceTags)
-        {
-            Console.WriteLine(tag);
-        }
-        Console.WriteLine("\n");
-        ArrayList yesNo = ["Yes", "No"];
-        string answer = UserInput.AskQuestion("Are these correct?", yesNo);
-        if (answer == "")
-        {
+            string serviceTag = "temp value";
+            while (!string.IsNullOrEmpty(serviceTag))
+            {
+                
+                serviceTag = Console.ReadLine();
+                serviceTag = serviceTag.ToUpper();
+                if (!string.IsNullOrEmpty(serviceTag) && !listOfServiceTags.Contains(serviceTag))
+                {
+                    listOfServiceTags.Add(serviceTag);
+                }
+            }
+
             
-        }
+            Console.Clear();
+            (int left, int top) = Console.GetCursorPosition();
+            Console.SetCursorPosition(left, top);
+            Console.CursorVisible = false;
+            Console.WriteLine("These are the service tags:");
+            foreach (string tag in listOfServiceTags)
+            {
+                Console.WriteLine(tag);
+            }
 
+            Console.WriteLine("");
+
+            ArrayList yesNo = ["Yes", "No"];
+            (int x, int y) = Console.GetCursorPosition();
+            string answer = AskQuestion($"Are these {listOfServiceTags.Count} items correct?", yesNo, y);
+            Console.Clear();
+
+            if (answer == "Yes")
+            {
+                break;
+            }
+            
+            ArrayList addOrRemoveList = ["Add", "Remove"];
+            string addOrRemove = AskQuestion("Do you need to add or remove items?", addOrRemoveList);
+            
+            if (addOrRemove == "Add")
+            {
+                Console.Clear();
+                continue;
+            }
+            
+            Console.Clear();
+        }
+        
         return listOfServiceTags;
     }
     
