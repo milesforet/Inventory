@@ -7,16 +7,24 @@ using System.Security.AccessControl;
 using Inventory;
 using System.IO;
 using System.Net;
-using System.Net.Mime;
 using System.Reflection;
 using System.Text.Json;
 using Microsoft.SharePoint.Client;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using Console = System.Console;
 using File = System.IO.File;
 
 public class Program
 {
+
+    public static void PrintList(IEnumerable list)
+    {
+        foreach (var item in list)
+        {
+            Console.WriteLine(item);
+        }
+    }
     
     public static string CheckUser()
     {
@@ -34,7 +42,7 @@ public class Program
                 return (string)json["user"];
             }
             
-            ArrayList users = json["users"].ToObject<ArrayList>();
+            List<string> users = json["users"].ToObject<List<string>>();
             string whichUser = "Uh oh! We don't know you! Who are you?";
             
             string user = UserInput.AskQuestion(whichUser, users);
@@ -45,36 +53,70 @@ public class Program
             return user;
         }
     }
+
+    public static void AppFlow()
+    {
+        string currentUser = CheckUser();
+        bool keepAppRunning = true;
+        while (keepAppRunning)
+        {
+            Console.Clear();
+            string menuSelection = UserInput.ShowMainMenu();
+            if (menuSelection == "Exit")
+            {
+                Environment.Exit(1);
+            }
+            else if (menuSelection == "View Inventory")
+            {
+                Console.WriteLine("VIEWING INVENTORY");
+                Environment.Exit(1);
+            }
+            else
+            {
+                Console.Clear();
+                List<string> devicesBeingUpdated = UserInput.GetServiceTags().Cast<string>().ToList();
+                List<string> devicesToRemove = new List<string>();
+                
+                foreach (string serviceTag in devicesBeingUpdated)
+                {
+                    string deviceId = Freshservice.GetDeviceId(serviceTag);
+                    if (deviceId == "")
+                    {
+                        devicesToRemove.Add(serviceTag);
+                    }
+                }
+                Console.WriteLine("The following devices could not be found in FS. They cannot be updated" 
+                                   + String.Join(", ", devicesToRemove));
+                
+                devicesBeingUpdated = devicesBeingUpdated.Except(devicesToRemove).ToList();
+
+                if (devicesBeingUpdated.Count == 0)
+                {
+                    Console.WriteLine("No service tags detected. Hit any key to return to menu.");
+                    Console.ReadLine();
+                    continue;
+                }
+                
+
+                if (menuSelection == "Add to Inventory")
+                {
+                    Console.WriteLine("ADD TO INVENTORY");
+                }else if (menuSelection == "Assign Inventory")
+                {
+                    Console.WriteLine("Assign INVENTORY");
+                }
+                
+            }
+
+            keepAppRunning = false;
+        }
+    }
     
     public static void Main()
     {
-        /*Console.CursorVisible = false;
-        string user = Program.CheckUser();
-        Console.Clear();
-        Console.WriteLine($"Welcome {user}! Press any key to continue...");
-        Console.ReadKey();
-        Console.Clear();
 
-        bool usingApp = true;
-
-        while (usingApp)
-        {
-            string menuSelection = UserInput.ShowMainMenu();
-
-            if (menuSelection == "Exit")
-            {
-                Console.Clear();
-                
-                Environment.Exit(1);
-            }
-            
-        }*/
-
-        
-        Freshservice.AssignDevice("123456789", "test");
+        AppFlow();
         
         Environment.Exit(1);
-        
-        
     }
 }

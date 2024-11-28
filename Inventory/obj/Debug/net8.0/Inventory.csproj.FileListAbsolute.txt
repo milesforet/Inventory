@@ -65,3 +65,4 @@ C:\Users\miles\RiderProjects\Inventory\Inventory\obj\Debug\net8.0\refint\Invento
 C:\Users\miles\RiderProjects\Inventory\Inventory\obj\Debug\net8.0\Inventory.pdb
 C:\Users\miles\RiderProjects\Inventory\Inventory\obj\Debug\net8.0\Inventory.genruntimeconfig.cache
 C:\Users\miles\RiderProjects\Inventory\Inventory\obj\Debug\net8.0\ref\Inventory.dll
+C:\Users\MForet\RiderProjects\Inventory\Inventory\obj\Debug\net8.0\Inventory.sourcelink.json
