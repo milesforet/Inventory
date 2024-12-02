@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\MForet\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj": {}
+    "C:\\Users\\miles\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj": {}
   },
   "projects": {
-    "C:\\Users\\MForet\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj": {
+    "C:\\Users\\miles\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\MForet\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj",
+        "projectUniqueName": "C:\\Users\\miles\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj",
         "projectName": "Inventory",
-        "projectPath": "C:\\Users\\MForet\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj",
-        "packagesPath": "C:\\Users\\MForet\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\MForet\\RiderProjects\\Inventory\\Inventory\\obj\\",
+        "projectPath": "C:\\Users\\miles\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj",
+        "packagesPath": "C:\\Users\\miles\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\miles\\RiderProjects\\Inventory\\Inventory\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\MForet\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\miles\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
@@ -22,7 +22,6 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -46,6 +45,10 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "dependencies": {
+            "HtmlAgilityPack": {
+              "target": "Package",
+              "version": "[1.11.71, )"
+            },
             "Microsoft.Identity.Client": {
               "target": "Package",
               "version": "[4.66.2, )"
@@ -75,7 +78,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

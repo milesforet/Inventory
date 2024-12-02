@@ -2,6 +2,19 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "HtmlAgilityPack/1.11.71": {
+        "type": "package",
+        "compile": {
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {
+            "related": ".deps.json;.pdb;.xml"
+          }
+        },
+        "runtime": {
+          "lib/netstandard2.0/HtmlAgilityPack.dll": {
+            "related": ".deps.json;.pdb;.xml"
+          }
+        }
+      },
       "Microsoft.Identity.Client/4.66.2": {
         "type": "package",
         "dependencies": {
@@ -118,6 +131,55 @@
     }
   },
   "libraries": {
+    "HtmlAgilityPack/1.11.71": {
+      "sha512": "HlEThQBnob4/29DIiyrPSYlGXXSZUtOH7571PRev+yu8FW8n5pdxqHyun+PMm17cp3ovCrxFhXedC+1HUSdRMA==",
+      "type": "package",
+      "path": "htmlagilitypack/1.11.71",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "htmlagilitypack.1.11.71.nupkg.sha512",
+        "htmlagilitypack.nuspec",
+        "lib/Net35/HtmlAgilityPack.dll",
+        "lib/Net35/HtmlAgilityPack.pdb",
+        "lib/Net35/HtmlAgilityPack.xml",
+        "lib/Net40-client/HtmlAgilityPack.dll",
+        "lib/Net40-client/HtmlAgilityPack.pdb",
+        "lib/Net40-client/HtmlAgilityPack.xml",
+        "lib/Net40/HtmlAgilityPack.XML",
+        "lib/Net40/HtmlAgilityPack.dll",
+        "lib/Net40/HtmlAgilityPack.pdb",
+        "lib/Net45/HtmlAgilityPack.XML",
+        "lib/Net45/HtmlAgilityPack.dll",
+        "lib/Net45/HtmlAgilityPack.pdb",
+        "lib/NetCore45/HtmlAgilityPack.XML",
+        "lib/NetCore45/HtmlAgilityPack.dll",
+        "lib/NetCore45/HtmlAgilityPack.pdb",
+        "lib/netstandard1.3/HtmlAgilityPack.deps.json",
+        "lib/netstandard1.3/HtmlAgilityPack.dll",
+        "lib/netstandard1.3/HtmlAgilityPack.pdb",
+        "lib/netstandard1.3/HtmlAgilityPack.xml",
+        "lib/netstandard1.6/HtmlAgilityPack.deps.json",
+        "lib/netstandard1.6/HtmlAgilityPack.dll",
+        "lib/netstandard1.6/HtmlAgilityPack.pdb",
+        "lib/netstandard1.6/HtmlAgilityPack.xml",
+        "lib/netstandard2.0/HtmlAgilityPack.deps.json",
+        "lib/netstandard2.0/HtmlAgilityPack.dll",
+        "lib/netstandard2.0/HtmlAgilityPack.pdb",
+        "lib/netstandard2.0/HtmlAgilityPack.xml",
+        "lib/portable-net45+netcore45+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.XML",
+        "lib/portable-net45+netcore45+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.dll",
+        "lib/portable-net45+netcore45+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.pdb",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.XML",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.dll",
+        "lib/portable-net45+netcore45+wpa81+wp8+MonoAndroid+MonoTouch/HtmlAgilityPack.pdb",
+        "lib/uap10.0/HtmlAgilityPack.XML",
+        "lib/uap10.0/HtmlAgilityPack.dll",
+        "lib/uap10.0/HtmlAgilityPack.pdb",
+        "lib/uap10.0/HtmlAgilityPack.pri",
+        "readme.md"
+      ]
+    },
     "Microsoft.Identity.Client/4.66.2": {
       "sha512": "OsWRWpJs5iY9DxAF7DfWRGVNeFhjz75x+/bpHKB9Hbnu3THUgqYfQrYeQMgwx30ctweiV7h00aQpEua2kLeUpg==",
       "type": "package",
@@ -315,25 +377,26 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "HtmlAgilityPack >= 1.11.71",
       "Microsoft.Identity.Client >= 4.66.2",
       "Microsoft.SharePointOnline.CSOM >= 16.1.25409.12000",
       "Newtonsoft.Json >= 13.0.3"
     ]
   },
   "packageFolders": {
-    "C:\\Users\\MForet\\.nuget\\packages\\": {}
+    "C:\\Users\\miles\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\MForet\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj",
+      "projectUniqueName": "C:\\Users\\miles\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj",
       "projectName": "Inventory",
-      "projectPath": "C:\\Users\\MForet\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj",
-      "packagesPath": "C:\\Users\\MForet\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\MForet\\RiderProjects\\Inventory\\Inventory\\obj\\",
+      "projectPath": "C:\\Users\\miles\\RiderProjects\\Inventory\\Inventory\\Inventory.csproj",
+      "packagesPath": "C:\\Users\\miles\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\miles\\RiderProjects\\Inventory\\Inventory\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\MForet\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\miles\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
@@ -341,7 +404,6 @@
       ],
       "sources": {
         "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
-        "C:\\Program Files\\dotnet\\library-packs": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
@@ -365,6 +427,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "HtmlAgilityPack": {
+            "target": "Package",
+            "version": "[1.11.71, )"
+          },
           "Microsoft.Identity.Client": {
             "target": "Package",
             "version": "[4.66.2, )"
@@ -394,7 +460,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.300/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.403/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

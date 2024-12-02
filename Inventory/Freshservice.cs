@@ -87,27 +87,6 @@ public class Freshservice
         return json;
     }
 
-
-    public static void AssignDevice(string serviceTag, string user)
-    {
-        if (!user.Contains("@abskids.com"))
-        {
-            user = user + "@abskids.com";
-        }
-
-        //TODO: FRESH API TO GET USER ID OF ASSIGNEE. NEED PERMISSION TO CALL USER ENDPOINT
-
-
-        Dictionary<string, string> body = new Dictionary<string, string>();
-        body.Add("state_name", "In Use");
-        body.Add("user_id", "21001534735");
-
-
-        JObject json = PutFreshApi($"/api/v2/assets/{serviceTag}", body);
-        Console.WriteLine(json);
-
-    }
-
     public static Hashtable GetDeviceInfo(string serviceTag)
     {
 
@@ -163,19 +142,14 @@ public class Freshservice
         return id;
     }
 
-    public static string GetEmployeeId(string email)
+    public static long GetEmployeeId(string email)
     {
-        if (email.Contains("@abskids.com"))
-        {
-            email = email.Replace("@abskids.com", "");
-        }
 
         try
         {
             using (HttpClient httpClient = new HttpClient())
             {
-                string url =
-                    $"https://abskids.freshservice.com/api/v2/requesters?query=\"primary_email:%27{email}%40abskids.com%27\"";
+                string url = $"https://abskids.freshservice.com/api/v2/requesters?query=\"primary_email:%27{email}%40abskids.com%27\"";
 
                 string auth = Convert.ToBase64String(Encoding.UTF8.GetBytes(FRESH_KEY));
                 httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
@@ -183,16 +157,16 @@ public class Freshservice
                 HttpResponseMessage response = httpClient.GetAsync(url).Result;
                 if (!(response.StatusCode == HttpStatusCode.OK))
                 {
-                    return "";
+                    return 0;
                 }
 
                 JObject jsonResponse = JObject.Parse(response.Content.ReadAsStringAsync().Result);
                 if (jsonResponse["requesters"].Count() == 0)
                 {
-                    return "";
+                    return 0;
                 }
 
-                return jsonResponse["requesters"][0]["id"].ToString();
+                return jsonResponse["requesters"][0]["id"].ToObject<long>();
             }
         }
         catch (Exception ex)
@@ -202,7 +176,7 @@ public class Freshservice
             Environment.Exit(1);
         }
 
-        return "";
+        return 0;
     }
 
 
@@ -268,6 +242,47 @@ public class Freshservice
         {
             Console.WriteLine(ex.Message);
         }
+    }
+    
+    
+    public static bool AssignDevice(string deviceId, long userId)
+    {
+        Dictionary<string, string> body = new Dictionary<string, string>();
+        
+        JObject requestBody = new JObject();
+        JObject typeFields = new JObject();
+        typeFields.Add("asset_state_21002167462", "In Use");
+        
+        requestBody.Add("type_fields", typeFields);
+        requestBody.Add("user_id", userId);
+        requestBody.Add("group_id", 21000516398);
+        requestBody.Add("location_id", null);
+        
+        string url = $"https://abskids.freshservice.com/api/v2/assets/{deviceId}";
+
+        try
+        {
+            using (HttpClient httpClient = new HttpClient())
+            {
+                string auth = Convert.ToBase64String(Encoding.UTF8.GetBytes(FRESH_KEY));
+                httpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", auth);
+                httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                HttpContent content = new StringContent(requestBody.ToString(), Encoding.UTF8, "application/json");
+                HttpResponseMessage response = httpClient.PutAsync(url, content).Result;
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return false;
+                }
+                
+            }
+        }
+        catch (Exception ex)
+        {
+            return false;
+        }
+
+        return true;
     }
     
 }
