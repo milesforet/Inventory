@@ -1,20 +1,22 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Collections;
+﻿using System.Collections;
 using Inventory;
 using System.Net.NetworkInformation;
+using System.Reflection;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Console = System.Console;
 using File = System.IO.File;
+using Terminal.Gui;
 
 public class Program
 {
+    
     private static string COLOR_RED = "\x1b[91m";
     private static string COLOR_GREEN = "\x1b[92m";
     private static string COLOR_NORMAL = "\x1b[39m";
+    private static System.Media.SoundPlayer successSound = new System.Media.SoundPlayer(Environment.CurrentDirectory + @"\success.wav");
 
-    public static bool IsConnectedToInternet()
+    private static bool IsConnectedToInternet()
     {
         try { 
             Ping myPing = new Ping();
@@ -38,11 +40,10 @@ public class Program
         }
     }
     
-    public static string CheckUser()
+    private static string CheckUser()
     {
-        string path = @"../../../config.json";
         
-        using (StreamReader configFile = new StreamReader(path))
+        using (StreamReader configFile = new StreamReader(Environment.CurrentDirectory +@"/config.json"))
         using (JsonTextReader reader = new JsonTextReader(configFile))
         {
             JObject json = (JObject)JToken.ReadFrom(reader);
@@ -61,13 +62,14 @@ public class Program
             json["user"] = user;
             
             configFile.Close();
-            File.WriteAllText(path, json.ToString());
+            File.WriteAllText(Environment.CurrentDirectory +@"/config.json", json.ToString());
             return user;
         }
     }
 
     public static void AppFlow()
     {
+        
         string currentUser = CheckUser();
         bool keepAppRunning = true;
        outer: while (keepAppRunning)
@@ -85,30 +87,46 @@ public class Program
             }
             
             Console.Clear();
-            List<string> devicesBeingUpdated = UserInput.GetServiceTags().Cast<string>().ToList();
-            List<string> devicesToRemove = new List<string>();
-            Dictionary<string, string> devicesServiceAndId = new Dictionary<string, string>();
+            List<string> devicesBeingUpdated = UserInput.GetServiceTags().ToList();
+            List<string> devicesNotInSystem = new List<string>();
+            Dictionary<string, string> devicesInSystemAndId = new Dictionary<string, string>();
             
             foreach (string serviceTag in devicesBeingUpdated)
             {
                 string deviceId = Freshservice.GetDeviceId(serviceTag);
                 if (string.IsNullOrEmpty(deviceId)  || deviceId.StartsWith("Error"))
                 {
-                    devicesToRemove.Add(serviceTag);
+                    devicesNotInSystem.Add(serviceTag);
                     continue;
                 }
                 
-                devicesServiceAndId.Add(serviceTag, deviceId);
+                devicesInSystemAndId.Add(serviceTag, deviceId);
             }
 
-            if (devicesToRemove.Count > 0)
+            if (devicesNotInSystem.Count > 0)
             {
-                Console.WriteLine("The following devices could not be found in FS. They are being removed: " + string.Join(", ", devicesToRemove));
-                Console.WriteLine("Press any key to continue...");
+                //CURRENTLY WORKING ON THIS 12/18 - giving the option to add devices that aren't found ##############################################################################
+                Console.ForegroundColor = ConsoleColor.Red;
+                Console.WriteLine("The following devices could not be found in FS: " + string.Join(", ", devicesNotInSystem));
+                Console.ForegroundColor = ConsoleColor.White;
+                List<string> question = ["Yes", "No"];
+                string answer = UserInput.AskQuestion("Would you like to add these devices to Freshservice? NOTE: They have to be Dell devices to work.", question, 1);
+                if (answer == "No")
+                {
+                    goto ExitAddingToFresh;
+                }
+
+                foreach (string device in devicesNotInSystem)
+                {
+                    string model = DeviceInfo.GetDeviceModel(device);
+                    Console.WriteLine($"{device} is a {model}");
+                }
                 Console.ReadLine();
             }
+            
+            ExitAddingToFresh:
 
-            if (devicesServiceAndId.Count == 0)
+            if (devicesInSystemAndId.Count == 0)
             {
                 Console.WriteLine("No service tags detected. Hit any key to return to menu.");
                 Console.ReadLine();
@@ -119,7 +137,33 @@ public class Program
             
             if (menuSelection == "Add to Inventory")
             {
-                Console.WriteLine("ADD TO INVENTORY");
+                foreach (string device in devicesInSystemAndId.Keys)
+                {
+                    bool newDevice = true;
+                    List<string> answers = ["New", "Used"];
+                    string answer = UserInput.AskQuestion($"Is {device} a new or used device?", answers);
+                    if (answer == "Used")
+                    {
+                        newDevice = false;
+                    }
+                    bool deviceUpdated = Freshservice.InventoryDevice(currentUser, devicesInSystemAndId[device], newDevice);
+                    if (!deviceUpdated)
+                    {
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"{device} could not be added to the inventory.");
+                        Console.ForegroundColor = ConsoleColor.White;
+                        continue;
+                    }
+
+                    successSound.Play();
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{device} has been added to {currentUser}'s {answer} Inventory.");
+                    Console.ForegroundColor = ConsoleColor.White;
+                    
+                }
+                Console.WriteLine("\nInventory has been updated. Hit any key to return to menu.");
+                Console.ReadLine();
+                
             }
             else if (menuSelection == "Assign Inventory")
             {
@@ -147,7 +191,9 @@ public class Program
                     }          
                     
                     Console.Clear();
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine($"Error: Could not find {assigneeEmail}@abskids.com. Hit esc to return to menu. Hit any other key to try again.");
+                    Console.ForegroundColor = ConsoleColor.White;
                     ConsoleKeyInfo key = Console.ReadKey(true);
                     if (key.Key == ConsoleKey.Escape)
                     {
@@ -156,36 +202,52 @@ public class Program
                 }
                 Console.Clear();
                 
-                foreach (string device in devicesServiceAndId.Keys)
+                foreach (string device in devicesInSystemAndId.Keys)
                 {
-                    bool deviceUpdated = Freshservice.AssignDevice(devicesServiceAndId[device], employeeId);
+                    bool deviceUpdated = Freshservice.AssignDevice(devicesInSystemAndId[device], employeeId, "Admin");
 
                     if (deviceUpdated == false)
                     {
-                        Console.WriteLine($"{COLOR_RED}{device} failed to update{COLOR_NORMAL}");
+                        Console.ForegroundColor = ConsoleColor.Red;
+                        Console.WriteLine($"{device} failed to update");
+                        Console.ForegroundColor = ConsoleColor.White;
                         continue;
                     }
-                    Console.WriteLine($"{COLOR_GREEN}{device} assigned to {assigneeEmail}@abskids.com{COLOR_NORMAL}\n");
-                    Console.WriteLine("Press any key to return to menu");
-                    Console.ReadLine();
+                    
+                    successSound.Play();
+                    Console.ForegroundColor = ConsoleColor.Green;
+                    Console.WriteLine($"{device} assigned to {assigneeEmail}@abskids.com");
+                    System.Media.SoundPlayer sounds = new System.Media.SoundPlayer(Environment.CurrentDirectory + @"/success.wav");
+                    sounds.Play();
+                    Console.ForegroundColor = ConsoleColor.White;
                 }
+                Console.WriteLine("\nPress any key to return to menu");
+                Console.ReadKey(true);
             }
         }
     }
     
     public static void Main()
     {
-
-        if (!IsConnectedToInternet())
+        /*if (!IsConnectedToInternet())
         {
+
             Console.WriteLine("Not connected to the internet. Exiting...");
             Environment.Exit(1);
-        }
+        }*/
         
-        AppFlow();
+        //AppFlow();
+
+        //Freshservice.GetDeviceInfo("HJSX564");
         
-        //Console.WriteLine(Webscraping.getDeviceModel("1688C54"));
+        /*Freshservice.AddNewDevice("TEST123", "Admin", "In Stock", "OptiPlex 3070 Micro");
+        DateTime now = DateTime.Now;
+        Console.WriteLine(now.ToString(""));*/
         
-        Environment.Exit(1);
+        Freshservice.GetProducts();
+        
+        
+
+
     }
 }

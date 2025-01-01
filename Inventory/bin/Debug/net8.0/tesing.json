@@ -1,0 +1,12 @@
+{
+  "user": "",
+  "users": [
+    "Dalton",
+    "Miles",
+    "Warren"
+  ],
+  "devices": {
+    "test": "12345",
+    "testingtesting123": ""
+  }
+}

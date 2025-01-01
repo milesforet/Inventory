@@ -36,7 +36,14 @@ public class UserInput
 
             for (int i = 0; i < answers.Count; i++)
             {
-                Console.WriteLine($"{(option == i ? reverseText : "")}{answers[i]}\x1b[27m");
+                if (option == i)
+                {
+                    Console.BackgroundColor = ConsoleColor.White;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                }
+                Console.WriteLine(answers[i]);
+                Console.BackgroundColor = ConsoleColor.Black;
+                Console.ForegroundColor = ConsoleColor.White;
             }
 
             key = Console.ReadKey(true);
